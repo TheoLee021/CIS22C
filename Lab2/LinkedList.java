@@ -40,7 +40,7 @@ public class LinkedList<T> {
     
     /**
      * Returns the value stored in the first node
-     * @precondition the first node is not empty
+     * @precondition The list is not empty
      * @return the value stored at node first
      * @throws NoSuchElementException when precondition is violated
      */
@@ -53,7 +53,7 @@ public class LinkedList<T> {
 	
     /**
      * Returns the value stored in the last node
-     * @precondition the last node is not empty
+     * @precondition The list is not empty
      * @return the value stored in the node last
      * @throws NoSuchElementException when precondition is violated
      */
@@ -120,7 +120,7 @@ public class LinkedList<T> {
     
     /**
      * removes the element at the front of the LinkedList
-     * @precondition the first node is not empty
+     * @precondition The list is not empty
      * @postcondition Removes the element at the front of the LinkedList, and updates length if necessary
      * @throws NoSuchElementException when precondition is violated
      */
@@ -144,7 +144,7 @@ public class LinkedList<T> {
     
     /**
      * removes the element at the end of the LinkedList
-     * @precondition the last node is not empty
+     * @precondition The list is not empty
      * @postcondition Removes the element at the end of the LinkedList, and updates length if necessary
      * @throws NoSuchElementException when precondition is violated
      */
