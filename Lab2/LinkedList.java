@@ -1,7 +1,6 @@
 /**
  * Defines a doubly-linked list class
  * @author Theo Lee
- * @author
  */
 import java.util.NoSuchElementException;
 
@@ -129,13 +128,10 @@ public class LinkedList<T> {
     		throw new NoSuchElementException();
     	}
     	if(length == 1) {
-    		first = last = iterator = null;
+    		first = last = null;
     		length = 0;
     	}
     	else {
-    		if(iterator == first) {
-    			iterator = null;
-    		}
     		first = first.next;
     		first.prev = null;
     		length--;
@@ -153,13 +149,10 @@ public class LinkedList<T> {
     		throw new NoSuchElementException();
     	}
     	if(length == 1) {
-    		first = last = iterator = null;
+    		first = last = null;
     		length = 0;
     	}
     	else {
-    		if(iterator == last) {
-    			iterator = null;
-    		}
     		last = last.prev;
     		last.next = null;
     		length--;
