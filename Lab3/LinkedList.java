@@ -35,6 +35,25 @@ public class LinkedList<T> {
 		this.iterator = null;
 	}
 	
+    /**
+     * Converts the given array into a LinkedList
+     * @param array the array of values to insert into this LinkedList
+     * @postcondition <fill in here>
+     */
+    public LinkedList(T[] array) {
+
+    }
+
+    /**
+     * Instantiates a new LinkedList by copying another List
+     * @param original the LinkedList to copy
+     * @postcondition a new List object, which is an identical,
+     * but separate, copy of the LinkedList original
+     */
+    public LinkedList(LinkedList<T> original) {
+
+    }
+	
     /**** ACCESSORS ****/
     
     /**
@@ -65,12 +84,14 @@ public class LinkedList<T> {
     
     /**
      * Returns the data stored in the iterator node
-     * @precondition 
+     * @precondition The iterator is not null
      * @return the data stored in the iterator node
-     * @throws NullPointerException <fill in here>
+     * @throws NullPointerException when precondition is violated
      */
     public T getIterator() throws NullPointerException {
-    	//precondition
+    	if (iterator == null) {
+    		throw new NullPointerException("getIterator: Iterator is null");
+    	}
     	return iterator.data; //general case
     }
     
@@ -139,11 +160,24 @@ public class LinkedList<T> {
     /**
      * Inserts a new element after the iterator
      * @param data the data to insert
-     * @precondition <fill in here>
-     * @throws NullPointerException <fill in here>
+     * @precondition The iterator is not null
+     * @throws NullPointerException when precondition is violated
      */
     public void addIterator(T data) throws NullPointerException{
-        return;
+    	if (iterator == null) {
+    		throw new NullPointerException("addIterator: Iterator is null");
+    	}
+    	else if (iterator == last){ // edge case: insert at the last
+    		addLast(data);
+    	}
+    	else {
+        	Node newNode = new Node(data);
+        	newNode.next = iterator.next;
+        	newNode.prev = iterator;
+        	iterator.next.prev = newNode;
+        	iterator.next = newNode;
+        	length++;
+    	}
     }
     
     /**
@@ -180,7 +214,7 @@ public class LinkedList<T> {
     	if(length == 0) {
     		throw new NoSuchElementException("removeLast: List is empty"); // add a descriptive error message
     	}
-    	if(length == 1) {	// This is a edge case, only one Node
+    	if(length == 1) {	// This is an edge case, only one Node
     		first = last = iterator = null;
     		length = 0;
     	}
@@ -196,17 +230,31 @@ public class LinkedList<T> {
     
     /**
      * removes the element referenced by the iterator
-     * @precondition <fill in here>
-     * @postcondition <fill in here>
-     * @throws NullPointerException <fill in here>
+     * @precondition The iterator is not null
+     * @postcondition One node referenced by the iterator is removed
+     * @throws NullPointerException when precondition is violated
      */
     public void removeIterator() throws NullPointerException {
-         return;
+    	if (iterator == null) {
+    		throw new NullPointerException("removeIterator: iterator is null");
+    	}
+    	else if (iterator == first) {
+    		removeFirst();
+    	}
+    	else if (iterator == last) {
+    		removeLast();
+    	}
+    	else {
+	        iterator.prev.next = iterator.next;
+	        iterator.next.prev = iterator.prev;
+	        iterator = null;
+	        length --;
+    	}
     }
 
     /**
      * places the iterator at the first node
-     * @postcondition the iterator becomes the first node 
+     * @postcondition The iterator becomes the first node 
      */
     public void positionIterator(){
     	iterator = first;
@@ -214,26 +262,43 @@ public class LinkedList<T> {
 
     /**
      * Moves the iterator one node towards the last
-     * @precondition <fill in here>
-     * @postcondition <fill in here>
-     * @throws NullPointerException <fill in here>
+     * @precondition The iterator is not null
+     * @postcondition The iterator becomes the next node
+     * @throws NullPointerException when precondition is violated
      */
     public void advanceIterator() throws NullPointerException {
-    	//precondition
-    	iterator = iterator.next; //general case
+    	if (iterator == null) {
+    		throw new NullPointerException("advanceIterator: The iterator is null");
+    	}
+    	else {
+    		iterator = iterator.next; //general case
+    	}
     }
     
     /**
      * Moves the iterator one node towards the first
-     * @precondition <fill in here>
-     * @postcondition <fill in here>
-     * @throws NullPointerException <fill in here>
+     * @precondition The iterator is not null
+     * @postcondition The iterator becomes the previous node
+     * @throws NullPointerException when precondition is violated
      */
     public void reverseIterator() throws NullPointerException {
-         return;
+         if (iterator == null) {
+        	 throw new NullPointerException("reverseIterator: The iterator is null");
+         }
+         else {
+        	 iterator = iterator.prev;
+         }
     }
     
     /**** ADDITIONAL OPERATIONS ****/
+    
+    /**
+     * Re-sets LinkedList to empty as if the
+     * default constructor had just been called
+     */
+    public void clear() {
+         return;
+    }
     
 	/**
 	 * Converts the linkedList to a String, with each value separated by a blank
@@ -251,5 +316,53 @@ public class LinkedList<T> {
 		return result.toString() + "\n";
 	}
 	
+	/**
+     * Determines whether the given Object is
+     * another LinkedList, containing
+     * the same data in the same order
+     * @param obj another Object
+     * @return whether there is equality
+     */
+    @SuppressWarnings("unchecked") //good practice to remove warning here
+    @Override public boolean equals(Object obj) {
+        return false;
+    }
+
+    /**CHALLENGE METHODS*/
+
+   /**
+     * Moves all nodes in the list towards the end
+     * of the list the number of times specified
+     * Any node that falls off the end of the list as it
+     * moves forward will be placed the front of the list
+     * For example: [1, 2, 3, 4, 5], numMoves = 2 -> [4, 5, 1, 2 ,3]
+     * For example: [1, 2, 3, 4, 5], numMoves = 4 -> [2, 3, 4, 5, 1]
+     * For example: [1, 2, 3, 4, 5], numMoves = 7 -> [4, 5, 1, 2 ,3]
+     * @param numMoves the number of times to move each node.
+     * @precondition numMoves >= 0
+     * @postcondition iterator position unchanged (i.e. still referencing
+     * the same node in the list, regardless of new location of Node)
+     * @throws IllegalArgumentException when numMoves < 0
+     */
+    public void spinList(int numMoves) throws IllegalArgumentException{
+         return;
+    }
+
+
+   /**
+     * Splices together two LinkedLists to create a third List
+     * which contains alternating values from this list
+     * and the given parameter
+     * For example: [1,2,3] and [4,5,6] -> [1,4,2,5,3,6]
+     * For example: [1, 2, 3, 4] and [5, 6] -> [1, 5, 2, 6, 3, 4]
+     * For example: [1, 2] and [3, 4, 5, 6] -> [1, 3, 2, 4, 5, 6]
+     * @param list the second LinkedList
+     * @return a new LinkedList, which is the result of
+     * interlocking this and list
+     * @postcondition this and list are unchanged
+     */
+    public LinkedList<T> altLists(LinkedList<T> list) {
+        return null;
+    }
 }
     
