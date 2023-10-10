@@ -1,4 +1,3 @@
-
 /**
  * Defines a doubly-linked list class
  * @author Theo Lee
