@@ -40,10 +40,10 @@ public class Stack<T> implements LIFO<T> {
     public Stack(T[] array) {
     	this();
     	if(array != null) {
-    		for(int i = 0; i < array.length; i++) {
+    		for(int i = array.length - 1; i >= 0; i--) {
     			this.push(array[i]);
+    		}
     	}
-    		
     }
 
     /**
@@ -55,35 +55,92 @@ public class Stack<T> implements LIFO<T> {
      * IN O(N) TIME
      */
     public Stack(Stack<T> original) {
-
+    	if(original == null || original.size == 0) {
+    		return;
+    	}
+    	this.size = original.size;
+    	this.top = new Node(original.top.data);
+    	Node temp1 = original.top.next;
+    	Node temp2 = this.top;
+    	
+    	while(temp1 != null) {
+    		temp2.next = new Node(temp1.data);
+    		temp1 = temp1.next;
+    		temp2 = temp2.next;
+    	}
     }
 
-    /****ACCESSORS****/
+    /****ACCESSORS
 
-    /**FILL IN HERE*/
+	/**
+	 * Returns the value stored in the top node
+	 * @precondition The list is not empty
+	 * @return the value stored at node top
+	 * @throws NoSuchElementException when precondition is violated
+	 */
+    public T peek() throws NoSuchElementException {
+    	if(this.size == 0) {
+    		throw new NoSuchElementException("peek:The list is empty");
+    	}
+    	return this.top.data;
+    }
+    
+	/**
+	 * Returns the current size of the Stack
+	 * @return the size of the Stack from 0 to n
+	 */
+    public int getSize() {
+    	return this.size;
+    }
+    
+	/**
+	 * Returns whether the Stack is currently empty
+	 * @return whether the Stack is empty
+	 */
+    public boolean isEmpty() {
+    	return this.size == 0;
+    }
 
     /****MUTATORS****/
 
     
-    /**
-     * Push
-     */
+	/**
+	 * Creates a new top element
+	 * @param data the data to insert at the top of the Stack
+	 * @postcondition Creates a new top element, increase size
+	 */
     public void push(T data) {
     	Node newNode = new Node(data);
-    	if(length == 0) {
-    		first = last = newNode;
+    	if(this.size == 0) {
+    		top = newNode;
     	}
     	else {
-    		newNode.next = first;
-    		first.prev = newNode;
-    		first = newNode;
+    		newNode.next = top;
+    		top = newNode;
     	}
-    	length ++;
-    	
+    	size++;
     }
     
-    public void removeFirst(T data) {
-    	
+	/**
+	 * removes the element at the top of the Stack
+	 * @precondition The list is not empty or length != 0 or ! isEmpty()
+	 * @postcondition Removes the element at the top of the Stack, and updates
+	 *                size if necessary, second to top Node becomes the top
+	 *                Node.
+	 * @throws NoSuchElementException when precondition is violated
+	 */
+    public void pop() throws NoSuchElementException {
+    	if(this.size == 0) {
+    		throw new NoSuchElementException("pop:The list is empty");
+    	}
+    	if(this.size == 1) {
+    		this.top = null;
+    		this.size = 0;
+    	}
+    	else {
+    		top = top.next;
+    		size--;
+    	}
     }
 
     /****ADDITONAL OPERATIONS****/
@@ -95,7 +152,13 @@ public class Stack<T> implements LIFO<T> {
      * @return a String of Stack values
      */
     public String toString() {
-        return "";
+       StringBuilder result = new StringBuilder();
+       Node temp = top;
+       while (temp != null) {
+    	   result.append(temp.data + " ");
+    	   temp = temp.next;
+       }
+       return result.toString() + "\n";
     }
 
     /**
@@ -106,7 +169,34 @@ public class Stack<T> implements LIFO<T> {
      */
     @SuppressWarnings("unchecked")
     @Override public boolean equals(Object obj) {
+    	if (this == obj) {
+    		return true;
+    	}
+    	else if (!(obj instanceof Stack)) {
             return false;
-        }
+    	}
+    	else {
+    		Stack<T> newStack = (Stack<T>) obj;
+    		if (this.size != newStack.size) {
+    			return false;
+    		}
+    		else {
+    			Node temp1 = this.top;
+    			Node temp2 = newStack.top;
+    			while (temp1 != null) {
+    				if(temp1.data == null || temp2.data == null) {
+    					if(temp1.data != temp2.data) {
+    						return false;
+    					}
+    				}
+    				else if(!(temp1.data.equals(temp2.data))) {
+    					return false;
+    				}
+    				temp1 = temp1.next;
+    				temp2 = temp2.next;
+    			}
+    			return true;
+    		}
+    	}
     }
 }
